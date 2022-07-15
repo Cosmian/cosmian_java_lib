@@ -6,12 +6,13 @@ import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Test;
 
-import com.cosmian.rest.gpsw.Abe;
-import com.cosmian.rest.gpsw.acccess_policy.AccessPolicy;
-import com.cosmian.rest.gpsw.acccess_policy.And;
-import com.cosmian.rest.gpsw.acccess_policy.Attr;
-import com.cosmian.rest.gpsw.acccess_policy.Or;
-import com.cosmian.rest.gpsw.policy.Policy;
+import com.cosmian.rest.abe.Abe;
+import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.access_policy.AccessPolicy;
+import com.cosmian.rest.abe.access_policy.And;
+import com.cosmian.rest.abe.access_policy.Attr;
+import com.cosmian.rest.abe.access_policy.Or;
+import com.cosmian.rest.abe.policy.Policy;
 import com.cosmian.rest.kmip.objects.PrivateKey;
 
 /**
@@ -36,7 +37,7 @@ public class Demo {
         }
 
         // Change the Cosmian Server Server URL and API key as appropriate
-        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()), new AbeSpecifications("abe_gpsw"));
 
         // ## Policy
         // In this demo, we will create a Policy which combines two axes, a

@@ -13,12 +13,13 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import com.cosmian.rest.gpsw.Abe;
-import com.cosmian.rest.gpsw.acccess_policy.AccessPolicy;
-import com.cosmian.rest.gpsw.acccess_policy.And;
-import com.cosmian.rest.gpsw.acccess_policy.Attr;
-import com.cosmian.rest.gpsw.acccess_policy.Or;
-import com.cosmian.rest.gpsw.policy.Policy;
+import com.cosmian.rest.abe.Abe;
+import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.access_policy.AccessPolicy;
+import com.cosmian.rest.abe.access_policy.And;
+import com.cosmian.rest.abe.access_policy.Attr;
+import com.cosmian.rest.abe.access_policy.Or;
+import com.cosmian.rest.abe.policy.Policy;
 import com.cosmian.rest.kmip.data_structures.PlainTextKeyValue;
 import com.cosmian.rest.kmip.objects.PrivateKey;
 import com.cosmian.rest.kmip.objects.PublicKey;
@@ -61,8 +62,8 @@ public class TestGpsw {
         logger.info(str);
         // make sure the correct serializer is used
         JSONObject json = new JSONObject(str);
-        assertTrue(json.has("last_attribute"));
-        assertTrue(json.has("max_attribute"));
+        assertTrue(json.has("last_attribute_value"));
+        assertTrue(json.has("max_attribute_value"));
         assertTrue(json.has("store"));
     }
 
@@ -71,7 +72,8 @@ public class TestGpsw {
         Attributes attributes = new Attributes(ObjectType.Private_Key, Optional.of(CryptographicAlgorithm.ABE));
         attributes.keyFormatType(Optional.of(KeyFormatType.AbeMasterSecretKey));
         attributes.vendorAttributes(
-            Optional.of(new VendorAttribute[] {Attr.toVendorAttribute(new Attr[] {new Attr("Department", "MKG")})}));
+            Optional.of(new VendorAttribute[] {Attr.toVendorAttribute(new Attr[] {new Attr("Department", "MKG")},
+                VendorAttribute.VENDOR_ATTR_ABE_ATTR)}));
         ObjectMapper mapper = new ObjectMapper();
         String str = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(attributes);
         logger.info(str);
@@ -92,7 +94,7 @@ public class TestGpsw {
 
         Policy pg = policy();
 
-        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),new AbeSpecifications("abe_gpsw"));
 
         String[] ids = abe.createMasterKeyPair(pg);
         logger.info("Created Master Key: Private Key ID: " + ids[0] + ", Public Key ID: " + ids[1]);
@@ -150,7 +152,7 @@ public class TestGpsw {
 
         Policy pg = policy();
 
-        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),new AbeSpecifications("abe_gpsw"));
 
         String[] ids = abe.createMasterKeyPair(pg);
         logger.info("Created Master Key: Private Key ID: " + ids[0] + ", Public Key ID: " + ids[1]);
