@@ -33,15 +33,15 @@ public final class Ffi {
     /**
      * Return the last error in a String that does not exceed `max_len` bytes
      *
-     * @param max_len the maximum number of bytes to return
+     * @param maxLen the maximum number of bytes to return
      * @throws FfiException in case of native library error
      * @return the error
      */
-    public static String get_last_error(int max_len) throws FfiException {
-        if (max_len < 1) {
-            throw new FfiException("get_last_error: max_lem must be at least one");
+    public static String get_last_error(int maxLen) throws FfiException {
+        if (maxLen < 1) {
+            throw new FfiException("get_last_error: maxLen must be at least one");
         }
-        byte[] output = new byte[max_len + 1];
+        byte[] output = new byte[maxLen + 1];
         IntByReference outputSize = new IntByReference(output.length);
         if (Ffi.INSTANCE.get_last_error(output, outputSize) == 0) {
             return new String(Arrays.copyOfRange(output, 0, outputSize.getValue()), StandardCharsets.UTF_8);
@@ -125,7 +125,6 @@ public final class Ffi {
         } catch (IOException e) {
             throw new FfiException("DB UIDs deserialization failed");
         }
-        Arrays.sort(dbUids);
         return dbUids;
     }
 
