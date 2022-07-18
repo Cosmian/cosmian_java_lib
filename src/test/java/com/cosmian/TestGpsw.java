@@ -14,7 +14,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import com.cosmian.rest.abe.Abe;
-import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.Implementation;
+import com.cosmian.rest.abe.Specifications;
 import com.cosmian.rest.abe.access_policy.AccessPolicy;
 import com.cosmian.rest.abe.access_policy.And;
 import com.cosmian.rest.abe.access_policy.Attr;
@@ -71,9 +72,8 @@ public class TestGpsw {
     public void test_attributes_serde() throws Exception {
         Attributes attributes = new Attributes(ObjectType.Private_Key, Optional.of(CryptographicAlgorithm.ABE));
         attributes.keyFormatType(Optional.of(KeyFormatType.AbeMasterSecretKey));
-        attributes.vendorAttributes(
-            Optional.of(new VendorAttribute[] {Attr.toVendorAttribute(new Attr[] {new Attr("Department", "MKG")},
-                VendorAttribute.VENDOR_ATTR_ABE_ATTR)}));
+        attributes.vendorAttributes(Optional.of(new VendorAttribute[] {
+            Attr.toVendorAttribute(new Attr[] {new Attr("Department", "MKG")}, VendorAttribute.VENDOR_ATTR_ABE_ATTR)}));
         ObjectMapper mapper = new ObjectMapper();
         String str = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(attributes);
         logger.info(str);
@@ -94,7 +94,8 @@ public class TestGpsw {
 
         Policy pg = policy();
 
-        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),new AbeSpecifications("abe_gpsw"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
         logger.info("Created Master Key: Private Key ID: " + ids[0] + ", Public Key ID: " + ids[1]);
@@ -152,7 +153,8 @@ public class TestGpsw {
 
         Policy pg = policy();
 
-        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),new AbeSpecifications("abe_gpsw"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
         logger.info("Created Master Key: Private Key ID: " + ids[0] + ", Public Key ID: " + ids[1]);

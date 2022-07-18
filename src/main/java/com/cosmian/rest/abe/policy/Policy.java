@@ -32,10 +32,10 @@ public class Policy implements Serializable {
     // mapping between (policy_name, policy_attribute) -> integer
     private HashMap<PolicyAttributeUid, TreeSet<Integer>> attributeToInt = new HashMap<>();
 
-    public Policy(int lastAttributeValue, int maxNumberOfRevocations, HashMap<String, PolicyAxis> store,
+    public Policy(int lastAttributeValue, int maxAttributeValue, HashMap<String, PolicyAxis> store,
         HashMap<PolicyAttributeUid, TreeSet<Integer>> attributeToInt) {
         this.lastAttributeValue = lastAttributeValue;
-        this.maxAttributeValue = maxNumberOfRevocations;
+        this.maxAttributeValue = maxAttributeValue;
         this.store = store;
         this.attributeToInt = attributeToInt;
     }
@@ -43,10 +43,10 @@ public class Policy implements Serializable {
     /**
      * Instantiate an empty policy allowing the given max number of revocations of attributes
      *
-     * @param maxNumberOfRevocations the maximum number of attributes revocations
+     * @param maxAttributeValue the maximum number of possible attributes
      */
-    public Policy(int maxNumberOfRevocations) {
-        this.maxAttributeValue = maxNumberOfRevocations;
+    public Policy(int maxAttributeValue) {
+        this.maxAttributeValue = maxAttributeValue;
     }
 
     /**
@@ -189,7 +189,7 @@ public class Policy implements Serializable {
 
     @Override
     public String toString() {
-        return "{" + " lastAttribute='" + getLastAttributeValue() + "'" + ", maxNumberOfRevocations='"
+        return "{" + " last Attribute='" + getLastAttributeValue() + "'" + ", maxAttributeValue='"
             + getMaxAttributeValue() + "'" + ", store='" + getStore() + "'" + ", attributeToInt='" + getAttributeToInt()
             + "'" + "}";
     }

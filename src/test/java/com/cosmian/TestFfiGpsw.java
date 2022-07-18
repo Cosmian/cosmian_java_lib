@@ -25,7 +25,8 @@ import com.cosmian.jna.abe.Ffi;
 import com.cosmian.jna.abe.FfiWrapper;
 import com.cosmian.jna.abe.MasterKeys;
 import com.cosmian.rest.abe.Abe;
-import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.Implementation;
+import com.cosmian.rest.abe.Specifications;
 import com.cosmian.rest.abe.access_policy.AccessPolicy;
 import com.cosmian.rest.abe.access_policy.And;
 import com.cosmian.rest.abe.access_policy.Attr;
@@ -36,9 +37,11 @@ import com.sun.jna.Native;
 
 public class TestFfiGpsw {
 
-    static final String abeImplementation = "abe_gpsw";
-    static final FfiWrapper INSTANCE = (FfiWrapper) Native.load(abeImplementation, FfiWrapper.class);
-    static final Ffi ffi = new Ffi(INSTANCE, new AbeSpecifications(abeImplementation));
+    static final Implementation abeImplementation = Implementation.GPSW;
+
+    static final FfiWrapper INSTANCE = (FfiWrapper) Native.load("abe_gpsw", FfiWrapper.class);
+
+    static final Ffi ffi = new Ffi(INSTANCE, new Specifications(abeImplementation));
 
     @BeforeAll
     public static void before_all() {
@@ -334,7 +337,7 @@ public class TestFfiGpsw {
         Policy pg = policy();
 
         Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
-            new AbeSpecifications("abe_gpsw"));
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -405,7 +408,7 @@ public class TestFfiGpsw {
         Policy pg = policy();
 
         Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
-            new AbeSpecifications("abe_gpsw"));
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -482,7 +485,7 @@ public class TestFfiGpsw {
         Policy pg = policy();
 
         Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
-            new AbeSpecifications("abe_gpsw"));
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -545,7 +548,7 @@ public class TestFfiGpsw {
         Policy pg = policy();
 
         Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
-            new AbeSpecifications("abe_gpsw"));
+            new Specifications(Implementation.GPSW));
 
         String[] ids = abe.createMasterKeyPair(pg);
 

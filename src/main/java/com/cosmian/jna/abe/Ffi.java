@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import com.cosmian.CosmianException;
 import com.cosmian.jna.FfiException;
-import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.Specifications;
 import com.cosmian.rest.abe.access_policy.AccessPolicy;
 import com.cosmian.rest.abe.access_policy.Attr;
 import com.cosmian.rest.abe.policy.Policy;
@@ -26,9 +26,9 @@ import com.sun.jna.ptr.IntByReference;
 public final class Ffi {
     private FfiWrapper instance;
 
-    private AbeSpecifications abeSpecifications;
+    private Specifications abeSpecifications;
 
-    public Ffi(FfiWrapper instance, AbeSpecifications abeSpecifications) {
+    public Ffi(FfiWrapper instance, Specifications abeSpecifications) {
         this.instance = instance;
         this.abeSpecifications = abeSpecifications;
     }

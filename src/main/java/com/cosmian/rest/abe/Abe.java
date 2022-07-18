@@ -46,11 +46,11 @@ public class Abe {
 
     private final Kmip kmip;
 
-    private final AbeSpecifications abeSpecifications;
+    private final Specifications impl;
 
-    public Abe(RestClient rest_client, AbeSpecifications abeSpecifications) {
+    public Abe(RestClient rest_client, Specifications abeSpecifications) {
         this.kmip = new Kmip(rest_client);
-        this.abeSpecifications = abeSpecifications;
+        this.impl = abeSpecifications;
     }
 
     /**
@@ -63,12 +63,12 @@ public class Abe {
     public String[] createMasterKeyPair(Policy policy) throws CosmianException {
         try {
             Attributes commonAttributes =
-                new Attributes(ObjectType.Private_Key, Optional.of(abeSpecifications.getCryptographicAlgorithm()));
-            commonAttributes.setKeyFormatType(Optional.of(abeSpecifications.getKeyFormatType()));
+                new Attributes(ObjectType.Private_Key, Optional.of(impl.getCryptographicAlgorithm()));
+            commonAttributes.setKeyFormatType(Optional.of(impl.getKeyFormatTypeMasterSecretKey()));
 
             // convert the Policy to attributes and attach it to the common attributes
-            VendorAttribute policy_attribute =
-                policy.toVendorAttribute(this.abeSpecifications.getAccessPolicyVendorAttribute());
+            VendorAttribute policy_attribute = policy.toVendorAttribute(this.impl.getPolicyVendorAttribute());
+
             commonAttributes.setVendorAttributes(Optional.of(new VendorAttribute[] {policy_attribute}));
 
             CreateKeyPair request = new CreateKeyPair(Optional.of(commonAttributes), Optional.empty());
@@ -77,8 +77,8 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Master Key generation failed: " + e.getMessage()
-                + "  " + e.getClass();
+            String err =
+                impl.getImplementation() + ": Master Key generation failed: " + e.getMessage() + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -94,25 +94,25 @@ public class Abe {
     public PrivateKey retrievePrivateMasterKey(String privateMasterKeyUniqueIdentifier) throws CosmianException {
         try {
             Get request = new Get(privateMasterKeyUniqueIdentifier);
-            request.setKeyFormatType(Optional.of(abeSpecifications.getKeyFormatType()));
+            request.setKeyFormatType(Optional.of(impl.getKeyFormatTypeMasterSecretKey()));
             //
             GetResponse response = this.kmip.get(request);
             Object object = response.getObject();
             if (!(object instanceof PrivateKey)) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " Private Master Key at identifier " + privateMasterKeyUniqueIdentifier);
+                throw new CosmianException("No " + impl.getImplementation() + " Private Master Key at identifier "
+                    + privateMasterKeyUniqueIdentifier);
             }
             PrivateKey sk = (PrivateKey) object;
-            if (!sk.getKeyBlock().getKeyFormatType().equals(abeSpecifications.getKeyFormatType())) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " Private Master Key at identifier " + privateMasterKeyUniqueIdentifier);
+            if (!sk.getKeyBlock().getKeyFormatType().equals(impl.getKeyFormatTypeMasterSecretKey())) {
+                throw new CosmianException("No " + impl.getImplementation() + " Private Master Key at identifier "
+                    + privateMasterKeyUniqueIdentifier);
             }
             return sk;
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Private Master Key could not be retrieved: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": Private Master Key could not be retrieved: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -137,8 +137,8 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Private Master Key could not be imported: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": Private Master Key could not be imported: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -154,25 +154,25 @@ public class Abe {
     public PublicKey retrievePublicMasterKey(String publicMasterKeyUniqueIdentifier) throws CosmianException {
         try {
             Get request = new Get(publicMasterKeyUniqueIdentifier);
-            request.setKeyFormatType(Optional.of(abeSpecifications.getKeyFormatTypePublicKey()));
+            request.setKeyFormatType(Optional.of(impl.getKeyFormatTypePublicKey()));
             //
             GetResponse response = this.kmip.get(request);
             Object object = response.getObject();
             if (!(object instanceof PublicKey)) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " Public Master Key at identifier " + publicMasterKeyUniqueIdentifier);
+                throw new CosmianException("No " + impl.getImplementation() + " Public Master Key at identifier "
+                    + publicMasterKeyUniqueIdentifier);
             }
             PublicKey sk = (PublicKey) object;
-            if (!sk.getKeyBlock().getKeyFormatType().equals(abeSpecifications.getKeyFormatTypePublicKey())) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " Public Master Key at identifier " + publicMasterKeyUniqueIdentifier);
+            if (!sk.getKeyBlock().getKeyFormatType().equals(impl.getKeyFormatTypePublicKey())) {
+                throw new CosmianException("No " + impl.getImplementation() + " Public Master Key at identifier "
+                    + publicMasterKeyUniqueIdentifier);
             }
             return sk;
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Public Master Key could not be retrieved: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": Public Master Key could not be retrieved: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -197,8 +197,8 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Public Master Key could not be imported: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": Public Master Key could not be imported: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -216,13 +216,13 @@ public class Abe {
         throws CosmianException {
         try {
             Attributes commonAttributes =
-                new Attributes(ObjectType.Private_Key, Optional.of(abeSpecifications.getCryptographicAlgorithm()));
-            commonAttributes.setKeyFormatType(Optional.of(abeSpecifications.getKeyFormatType()));
+                new Attributes(ObjectType.Private_Key, Optional.of(impl.getCryptographicAlgorithm()));
+            commonAttributes.setKeyFormatType(Optional.of(impl.getKeyFormatTypeDecryptionKey()));
 
             // convert the Access Policy to attributes and attach it to the common
             // attributes
             VendorAttribute accessPolicyAttribute =
-                accessPolicy.toVendorAttribute(this.abeSpecifications.getAccessPolicyVendorAttribute());
+                accessPolicy.toVendorAttribute(this.impl.getAccessPolicyVendorAttribute());
             commonAttributes.setVendorAttributes(Optional.of(new VendorAttribute[] {accessPolicyAttribute}));
             // link to the master private key
             commonAttributes.setLink(new Link[] {
@@ -234,8 +234,8 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": Master Key generation failed: " + e.getMessage()
-                + " " + e.getClass();
+            String err =
+                impl.getImplementation() + ": Master Key generation failed: " + e.getMessage() + " " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -251,25 +251,25 @@ public class Abe {
     public PrivateKey retrieveUserDecryptionKey(String userDecryptionKeyUniqueIdentifier) throws CosmianException {
         try {
             Get request = new Get(userDecryptionKeyUniqueIdentifier);
-            request.setKeyFormatType(Optional.of(abeSpecifications.getKeyFormatType()));
+            request.setKeyFormatType(Optional.of(impl.getKeyFormatTypeDecryptionKey()));
             //
             GetResponse response = this.kmip.get(request);
             Object object = response.getObject();
             if (!(object instanceof PrivateKey)) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " User Decryption Key at identifier " + userDecryptionKeyUniqueIdentifier);
+                throw new CosmianException("No " + impl.getImplementation() + " User Decryption Key at identifier "
+                    + userDecryptionKeyUniqueIdentifier);
             }
             PrivateKey sk = (PrivateKey) object;
-            if (!sk.getKeyBlock().getKeyFormatType().equals(abeSpecifications.getKeyFormatType())) {
-                throw new CosmianException("No " + abeSpecifications.getImplementation()
-                    + " User Decryption Key at identifier " + userDecryptionKeyUniqueIdentifier);
+            if (!sk.getKeyBlock().getKeyFormatType().equals(impl.getKeyFormatTypeDecryptionKey())) {
+                throw new CosmianException("No " + impl.getImplementation() + " User Decryption Key at identifier "
+                    + userDecryptionKeyUniqueIdentifier);
             }
             return sk;
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": User Decryption Key could not be retrieved: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": User Decryption Key could not be retrieved: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -294,8 +294,8 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + ": User Decryption Key could not be imported: "
-                + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + ": User Decryption Key could not be imported: " + e.getMessage()
+                + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -348,8 +348,7 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err =
-                abeSpecifications.getImplementation() + " encryption failed: " + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + " encryption failed: " + e.getMessage() + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -392,8 +391,7 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err =
-                abeSpecifications.getImplementation() + " decryption failed: " + e.getMessage() + "  " + e.getClass();
+            String err = impl.getImplementation() + " decryption failed: " + e.getMessage() + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }
@@ -421,9 +419,10 @@ public class Abe {
         throws CosmianException {
         try {
             Attributes attributes =
-                new Attributes(ObjectType.Private_Key, Optional.of(abeSpecifications.getCryptographicAlgorithm()));
-            attributes.keyFormatType(Optional.of(abeSpecifications.getKeyFormatType()));
-            attributes.vendorAttributes(Optional.of(new VendorAttribute[] {Attr.toVendorAttribute(policyAttributes, this.abeSpecifications.getAbeAttrVendorAttribute())}));
+                new Attributes(ObjectType.Private_Key, Optional.of(impl.getCryptographicAlgorithm()));
+            attributes.keyFormatType(Optional.of(impl.getKeyFormatTypeMasterSecretKey()));
+            attributes.vendorAttributes(Optional.of(new VendorAttribute[] {
+                Attr.toVendorAttribute(policyAttributes, this.impl.getAbeAttrVendorAttribute())}));
             ReKeyKeyPair request =
                 new ReKeyKeyPair(Optional.of(privateMasterKeyUniqueIdentifier), Optional.empty(), Optional.empty(),
                     Optional.of(attributes), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
@@ -432,7 +431,7 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = "Revocation of " + this.abeSpecifications.getImplementation() + "policy attributes failed: "
+            String err = "Revocation of " + this.impl.getImplementation() + "policy attributes failed: "
                 + e.getMessage() + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
@@ -461,8 +460,7 @@ public class Abe {
         } catch (CosmianException e) {
             throw e;
         } catch (Exception e) {
-            String err = abeSpecifications.getImplementation() + " key revocation failed: " + e.getMessage() + "  "
-                + e.getClass();
+            String err = impl.getImplementation() + " key revocation failed: " + e.getMessage() + "  " + e.getClass();
             logger.severe(err);
             throw new CosmianException(err, e);
         }

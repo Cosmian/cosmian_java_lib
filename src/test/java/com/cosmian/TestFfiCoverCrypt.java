@@ -25,7 +25,8 @@ import com.cosmian.jna.abe.Ffi;
 import com.cosmian.jna.abe.FfiWrapper;
 import com.cosmian.jna.abe.MasterKeys;
 import com.cosmian.rest.abe.Abe;
-import com.cosmian.rest.abe.AbeSpecifications;
+import com.cosmian.rest.abe.Implementation;
+import com.cosmian.rest.abe.Specifications;
 import com.cosmian.rest.abe.access_policy.AccessPolicy;
 import com.cosmian.rest.abe.access_policy.And;
 import com.cosmian.rest.abe.access_policy.Attr;
@@ -35,11 +36,11 @@ import com.cosmian.rest.kmip.objects.PublicKey;
 import com.sun.jna.Native;
 
 public class TestFfiCoverCrypt {
-    static final String abeImplementation = "cover_crypt";
+    static final Implementation abeImplementation = Implementation.CoverCrypt;
 
-    static final FfiWrapper INSTANCE = (FfiWrapper) Native.load(abeImplementation, FfiWrapper.class);
+    static final FfiWrapper INSTANCE = (FfiWrapper) Native.load("cover_crypt", FfiWrapper.class);
 
-    static final Ffi ffi = new Ffi(INSTANCE, new AbeSpecifications(abeImplementation));
+    static final Ffi ffi = new Ffi(INSTANCE, new Specifications(abeImplementation));
 
     @BeforeAll
     public static void before_all() {
@@ -337,8 +338,8 @@ public class TestFfiCoverCrypt {
 
         Policy pg = policy();
 
-        Abe abe =
-            new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()), new AbeSpecifications("cover_crypt"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.CoverCrypt));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -408,8 +409,8 @@ public class TestFfiCoverCrypt {
 
         Policy pg = policy();
 
-        Abe abe =
-            new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()), new AbeSpecifications("cover_crypt"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.CoverCrypt));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -485,8 +486,8 @@ public class TestFfiCoverCrypt {
 
         Policy pg = policy();
 
-        Abe abe =
-            new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()), new AbeSpecifications("cover_crypt"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.CoverCrypt));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
@@ -548,8 +549,8 @@ public class TestFfiCoverCrypt {
 
         Policy pg = policy();
 
-        Abe abe =
-            new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()), new AbeSpecifications("cover_crypt"));
+        Abe abe = new Abe(new RestClient(TestUtils.kmsServerUrl(), TestUtils.apiKey()),
+            new Specifications(Implementation.CoverCrypt));
 
         String[] ids = abe.createMasterKeyPair(pg);
 
